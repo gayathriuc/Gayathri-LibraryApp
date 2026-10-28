@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Library Management System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <p class="flash {{ category }}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h1>Library Management System</h1>
+
+        <!-- Add New Book -->
+        <div class="card">
+
+            <h2>Add New Book</h2>
+
+            <form action="/add_book" method="POST">
+
+                <label for="title">Book Title:</label>
+                <input type="text" id="title" name="title">
+
+                <br><br>
+
+                <label for="author">Author:</label>
+                <input type="text" id="author" name="author">
+
+                <br><br>
+
+                <button type="submit">Add Book</button>
+
+            </form>
+
+        </div>
+
+        <!-- Check Book Availability -->
+        <div class="card">
+
+            <h2>Check Book Availability</h2>
+
+            <form action="/check_availability" method="POST">
+
+                <label for="check_title">Book Title:</label>
+                <input type="text" id="check_title" name="check_title">
+
+                <button type="submit">Check Availability</button>
+
+            </form>
+
+        </div>
+
+        <!-- All Books -->
+        <h2>All Books</h2>
+
+        {% for book in books %}
+
+            <div class="book-card">
+
+                <h3>{{ book["title"] }}</h3>
+
+                <p>Author: {{ book["author"] }}</p>
+
+                {% if book["available"] %}
+
+                    <p class="status available">Available</p>
+
+                    <form action="/borrow_book/{{ book['id'] }}" method="POST">
+                        <button type="submit">Borrow</button>
+                    </form>
+
+                {% else %}
+
+                    <p class="status borrowed">Borrowed</p>
+
+                    <form action="/return_book/{{ book['id'] }}" method="POST">
+                        <button type="submit">Return</button>
+                    </form>
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</body>
+
+</html>
